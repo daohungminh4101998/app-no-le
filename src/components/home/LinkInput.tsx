@@ -4,7 +4,7 @@ import {
   ClipboardPaste,
   ArrowRight,
   Sparkles,
-  ShieldCheck,
+  // ShieldCheck,
 } from "lucide-react";
 import { useAppStore } from "../../stores/useAppStore";
 import { mockProducts } from "../../data/products";
@@ -101,19 +101,19 @@ export const LinkInput: React.FC<LinkInputProps> = ({ onLinkConverted }) => {
     processLink(url);
   };
 
-  const handleSampleClick = (url: string) => {
-    setInputUrl(url);
-    if (!isAuthenticated()) {
-      setPendingUrl(url);
-      setShowAuthModal(true);
-      showToast(
-        "Vui lòng đăng nhập để tạo link affiliate và nhận hoàn tiền",
-        "info",
-      );
-      return;
-    }
-    processLink(url);
-  };
+  // const handleSampleClick = (url: string) => {
+  //   setInputUrl(url);
+  //   if (!isAuthenticated()) {
+  //     setPendingUrl(url);
+  //     setShowAuthModal(true);
+  //     showToast(
+  //       "Vui lòng đăng nhập để tạo link affiliate và nhận hoàn tiền",
+  //       "info",
+  //     );
+  //     return;
+  //   }
+  //   processLink(url);
+  // };
 
   const handleAuthSuccess = () => {
     setShowAuthModal(false);

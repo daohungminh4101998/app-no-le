@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, ShoppingBag, Wallet, Compass, User } from 'lucide-react';
+import { Home, ShoppingBag, Compass, User } from 'lucide-react';
 import { useAppStore } from '../../stores/useAppStore';
 
 export const BottomNavigation: React.FC = () => {

@@ -13,7 +13,7 @@ import { useAppStore } from "../../stores/useAppStore";
 import { useNavigate } from "react-router-dom";
 import {
   getUserCashbackAmount,
-  getUserCashbackRate,
+  // getUserCashbackRate,
 } from "../../utils/cashback";
 
 interface LinkPreviewCardProps {
@@ -37,7 +37,7 @@ export const LinkPreviewCard: React.FC<LinkPreviewCardProps> = ({
 
   const isSaved = savedProductIds.includes(product.id);
   // Người mua chỉ nhận 70% tổng hoa hồng (product.cashbackRate), app giữ 30%
-  const userCashbackRate = getUserCashbackRate(product.cashbackRate);
+  // const userCashbackRate = getUserCashbackRate(product.cashbackRate);
   const estimatedCashback = getUserCashbackAmount(product.price, product.cashbackRate);
 
   const handleShare = () => {
