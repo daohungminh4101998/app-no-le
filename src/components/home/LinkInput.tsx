@@ -7,7 +7,6 @@ import {
   // ShieldCheck,
 } from "lucide-react";
 import { useAppStore } from "../../stores/useAppStore";
-import { mockProducts } from "../../data/products";
 import { isAuthenticated } from "../../services/api";
 import { RegisterModal } from "../auth/RegisterModal";
 
@@ -21,7 +20,7 @@ export const LinkInput: React.FC<LinkInputProps> = ({ onLinkConverted }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 
-  const { convertUrlWithAffiliateApi, convertUrlToProduct, showToast, user } =
+  const { convertUrlWithAffiliateApi, showToast, user } =
     useAppStore();
 
   const handlePasteFromClipboard = async () => {
@@ -35,31 +34,23 @@ export const LinkInput: React.FC<LinkInputProps> = ({ onLinkConverted }) => {
         }
       }
     } catch {
-      // Fallback if clipboard permission denied
+      showToast("Không thể đọc clipboard, hãy dán link thủ công.", "info");
     }
-    // Fallback sample
-    const sample = mockProducts[0].shopeeUrl;
-    setInputUrl(sample);
-    showToast("Đã chọn link mẫu!", "info");
   };
 
   const processLink = async (url: string) => {
     setLoading(true);
     try {
       const result = await convertUrlWithAffiliateApi(url, {
-        sub1: user.id,
+        sub1: user?.id ?? ""
       });
-      showToast(
-        "Đã tạo link Shopee an_redir 2026 và tính tiền hoàn!",
-        "success",
-      );
+    
       if (result.warnings && result.warnings.length > 0) {
         // Thông báo cho người dùng biết nếu hệ thống đã tự động gọt bỏ tham số rác
         showToast(result.warnings[0], "info");
       }
       if (onLinkConverted) onLinkConverted();
     } catch (err: any) {
-      console.warn("API error, fallback to local converter:", err);
       // Nếu là lỗi chưa đăng nhập hoặc 401
       if (err.message?.includes("401") || !isAuthenticated()) {
         setPendingUrl(url);
@@ -70,10 +61,7 @@ export const LinkInput: React.FC<LinkInputProps> = ({ onLinkConverted }) => {
         );
         return;
       }
-      // Fallback nếu server chưa phản hồi kịp
-      convertUrlToProduct(url);
-      showToast("Đã tính toán số tiền hoàn dự kiến!", "info");
-      if (onLinkConverted) onLinkConverted();
+      showToast(err?.message || "Có lỗi xảy ra, vui lòng thử lại.", "error");
     } finally {
       setLoading(false);
     }
@@ -126,62 +114,57 @@ export const LinkInput: React.FC<LinkInputProps> = ({ onLinkConverted }) => {
   };
 
   return (
-    <div className="w-full bg-white rounded-brand-xl p-5 shadow-float border border-slate-200/90 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute -top-12 -right-12 w-36 h-36 bg-gradient-to-br from-emerald-100/60 to-amber-100/40 rounded-full blur-2xl pointer-events-none" />
+    <div className="w-full bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-card border border-slate-200/80 relative overflow-hidden">
+      {/* Subtle ambient background glow */}
+      <div className="absolute -top-16 -right-16 w-40 h-40 bg-brand-500/5 rounded-full blur-2xl pointer-events-none" />
 
-      {/* Hero Badge */}
-      <div className="flex items-center gap-1.5 mb-2.5">
-        <span className="inline-flex items-center gap-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-2.5 py-1 rounded-full border border-emerald-200/80">
+      {/* Trust Badge */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-brand-800 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200/70">
           <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-          🤑 Mua Shopee được hoàn tiền
+          Tiết kiệm thông minh
         </span>
-        {/* <span className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-200/60">
-          <ShieldCheck className="w-3 h-3 text-brand-600" />
+        <span className="text-[11px] font-semibold text-slate-400">
           Cơ chế an_redir 2026
-        </span> */}
+        </span>
       </div>
 
       {/* Hero Heading */}
       <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug tracking-tight mb-2">
-        Nhập link Shopee.
+        Dán link sản phẩm Shopee.
         <br />
-        <span className="bg-gradient-to-r from-brand-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
-          Tạo link Affiliate & Nhận hoàn tiền.
+        <span className="text-brand-700">
+          Nhận tiền hoàn trực tiếp vào ví.
         </span>
       </h1>
 
-      <p className="text-xs sm:text-sm text-slate-500 mb-4 leading-relaxed">
-        Hệ thống tự động chuẩn hoá link sang cơ chế{" "}
-        <code className="bg-slate-100 text-slate-700 px-1 py-0.5 rounded text-[11px]">
-          an_redir 2026
-        </code>{" "}
-        để bảo vệ 100% hoa hồng và tiền hoàn cho bạn.
+      <p className="text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5 leading-relaxed">
+        Chỉ cần sao chép link món đồ muốn mua trên Shopee và dán vào đây. Hệ thống tự động tạo mã nhận tiền hoàn cho bạn.
       </p>
 
       {/* Input Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="relative flex items-center">
           <div className="absolute left-3.5 text-slate-400 pointer-events-none">
-            <Link2 className="w-5 h-5 text-brand-600" />
+            <Link2 className="w-4.5 h-4.5 text-brand-600 stroke-[2.2]" />
           </div>
 
           <input
             type="text"
             value={inputUrl}
             onChange={(e) => setInputUrl(e.target.value)}
-            placeholder="Dán link sản phẩm Shopee (shopee.vn/product/...)"
-            className="w-full pl-11 pr-24 py-3.5 text-sm sm:text-base bg-slate-50 border-2 border-slate-200 hover:border-slate-300 focus:border-brand-600 focus:bg-white rounded-brand text-slate-900 placeholder:text-slate-400 outline-none transition shadow-inner font-medium"
+            placeholder="Dán link sản phẩm Shopee (shopee.vn/...)"
+            className="w-full pl-10 pr-22 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-300 focus:border-brand-600 focus:bg-white text-slate-900 placeholder:text-slate-400 outline-none transition font-medium"
           />
 
           <button
             type="button"
             onClick={handlePasteFromClipboard}
-            className="absolute right-2 px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 active:scale-95 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1 tap-active"
+            className="absolute right-1.5 px-2.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-lg border border-slate-200 shadow-2xs transition flex items-center gap-1 tap-active cursor-pointer"
             title="Dán từ clipboard"
           >
-            <ClipboardPaste className="w-3.5 h-3.5 text-slate-600" />
-            <span>Dán</span>
+            <ClipboardPaste className="w-3.5 h-3.5 text-slate-500" />
+            <span>Dán link</span>
           </button>
         </div>
 
@@ -189,46 +172,21 @@ export const LinkInput: React.FC<LinkInputProps> = ({ onLinkConverted }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-12 bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 active:scale-[0.99] text-white font-bold text-base rounded-brand shadow-cta flex items-center justify-center gap-2 transition duration-150 tap-active disabled:opacity-70 cursor-pointer"
+          className="w-full h-11 sm:h-12 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base rounded-xl shadow-cta flex items-center justify-center gap-2 transition tap-active disabled:opacity-70 cursor-pointer"
         >
           {loading ? (
             <div className="flex items-center gap-2">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Đang tạo link ...</span>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Đang kiểm tra hoàn tiền...</span>
             </div>
           ) : (
             <>
               <span>Tạo link & Kiểm tra hoàn tiền</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </>
           )}
         </button>
       </form>
-
-      {/* Quick Sample Links */}
-      {/* <div className="mt-4 pt-3.5 border-t border-slate-100">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-            Thử link mẫu có sẵn:
-          </span>
-          <span className="text-[11px] text-emerald-600 font-bold">Hoàn đến 8%</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {mockProducts.slice(0, 4).map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => handleSampleClick(p.shopeeUrl)}
-              className="text-xs bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 text-slate-600 px-2.5 py-1.5 rounded-lg border border-slate-200 transition font-medium flex items-center gap-1 tap-active"
-            >
-              <span>{p.name.split(' ').slice(0, 3).join(' ')}</span>
-              <span className="text-[10px] text-emerald-600 font-extrabold bg-emerald-100 px-1 py-0.2 rounded">
-                +{Math.round(p.cashbackRate * 100)}%
-              </span>
-            </button>
-          ))}
-        </div>
-      </div> */}
 
       {/* Register / Login Modal popup if user not authenticated */}
       <RegisterModal

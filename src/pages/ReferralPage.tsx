@@ -1,56 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../stores/useAppStore';
 import { ReferralCard } from '../components/profile/ReferralCard';
-import { formatVND } from '../utils/format';
+import { EmptyState } from '../components/common/EmptyState';
+import { formatDate, formatVND } from '../utils/format';
+import { isAuthenticated } from '../services/api';
 import { ArrowLeft, Users } from 'lucide-react';
 
 export const ReferralPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAppStore();
+  const { user, referrals, fetchReferrals, refreshUserProfile } = useAppStore();
+  const [loading, setLoading] = useState(true);
 
-  const mockInvitedFriends = [
-    {
-      id: 1,
-      name: 'lananh_98',
-      phone: '097***432',
-      joinedDate: '30/09/2026',
-      status: 'Đã hoàn thành đơn Shopee',
-      bonus: 20000,
-    },
-    {
-      id: 2,
-      name: 'minhtri_tech',
-      phone: '091***890',
-      joinedDate: '12/09/2026',
-      status: 'Đã hoàn thành đơn Shopee',
-      bonus: 10000,
-    },
-    {
-      id: 3,
-      name: 'hoang_nam_vlog',
-      phone: '098***115',
-      joinedDate: '28/08/2026',
-      status: 'Đã hoàn thành đơn Shopee',
-      bonus: 10000,
-    },
-    {
-      id: 4,
-      name: 'thao_my_beauty',
-      phone: '093***772',
-      joinedDate: '15/08/2026',
-      status: 'Đã hoàn thành đơn Shopee',
-      bonus: 10000,
-    },
-    {
-      id: 5,
-      name: 'duc_anh_gaming',
-      phone: '090***654',
-      joinedDate: '02/08/2026',
-      status: 'Đang chọn sản phẩm',
-      bonus: 0,
-    },
-  ];
+  const isAuth = isAuthenticated();
+
+  // Lấy dữ liệu thật từ API: hồ sơ người dùng + danh sách bạn bè đã giới thiệu
+  useEffect(() => {
+    if (!isAuth) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    Promise.all([refreshUserProfile(), fetchReferrals()]).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuth, refreshUserProfile, fetchReferrals]);
 
   return (
     <div className="space-y-4 pb-8">
@@ -76,50 +53,50 @@ export const ReferralPage: React.FC = () => {
       <ReferralCard />
 
       {/* 3 Step Explanation */}
-      <div className="bg-white rounded-brand-xl p-5 border border-slate-200 shadow-soft">
-        <h3 className="text-sm font-black text-slate-900 uppercase tracking-wide mb-3">
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-2xs">
+        <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wide mb-4">
           Cách nhận thưởng 3 bước
         </h3>
 
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <span className="w-6 h-6 rounded-full bg-emerald-100 text-brand-700 font-extrabold text-xs flex items-center justify-center shrink-0">
+        <div className="space-y-4">
+          <div className="flex items-start gap-3.5">
+            <span className="w-7 h-7 rounded-xl bg-emerald-100 text-brand-700 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-2xs">
               1
             </span>
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-slate-800">
                 Chia sẻ mã hoặc đường link
               </h4>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Gửi mã <strong>{user.referralCode}</strong> cho bạn bè qua Messenger, Zalo hoặc mạng xã hội.
+              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                Gửi mã <strong className="font-mono text-slate-700">{user?.referralCode || '—'}</strong> cho bạn bè qua Messenger, Zalo hoặc mạng xã hội.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="w-6 h-6 rounded-full bg-emerald-100 text-brand-700 font-extrabold text-xs flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-3.5">
+            <span className="w-7 h-7 rounded-xl bg-emerald-100 text-brand-700 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-2xs">
               2
             </span>
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-slate-800">
                 Bạn bè đăng ký tài khoản
               </h4>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
                 Người được giới thiệu nhận ngay voucher 50.000đ chào mừng thành viên mới.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="w-6 h-6 rounded-full bg-emerald-100 text-brand-700 font-extrabold text-xs flex items-center justify-center shrink-0">
+          <div className="flex items-start gap-3.5">
+            <span className="w-7 h-7 rounded-xl bg-emerald-100 text-brand-700 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-2xs">
               3
             </span>
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-slate-800">
                 Nhận 10.000đ sau đơn Shopee đầu tiên
               </h4>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Khi bạn bè hoàn thành đơn hàng đầu tiên qua Hoàn Xu, tiền thưởng tự động cộng vào ví của bạn.
+              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                Khi bạn bè hoàn thành đơn hàng đầu tiên qua Nô Tì, tiền thưởng tự động cộng vào ví của bạn.
               </p>
             </div>
           </div>
@@ -127,42 +104,63 @@ export const ReferralPage: React.FC = () => {
       </div>
 
       {/* Invited Friends List */}
-      <div className="bg-white rounded-brand-xl p-5 border border-slate-200 shadow-soft">
-        <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-          <h3 className="text-sm font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-brand-600" />
-            Bạn bè đã tham gia ({mockInvitedFriends.length})
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-2xs">
+        <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-100">
+          <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wide flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-emerald-100 text-brand-600 flex items-center justify-center">
+              <Users className="w-3.5 h-3.5" />
+            </span>
+            <span>Bạn bè đã tham gia ({referrals.length})</span>
           </h3>
-          <span className="text-xs font-bold text-brand-700">
-            Tổng nhận: +{formatVND(user.totalReferralBonus)}
+          <span className="text-xs font-black text-brand-700 tabular-nums">
+            Tổng nhận: +{formatVND(user?.totalReferralBonus || 0)}
           </span>
         </div>
 
-        <div className="divide-y divide-slate-100">
-          {mockInvitedFriends.map((friend) => (
-            <div key={friend.id} className="py-2.5 flex items-center justify-between text-xs">
-              <div>
-                <span className="font-bold text-slate-800 block">{friend.name}</span>
-                <span className="text-[11px] text-slate-400">
-                  {friend.phone} · Ngày tham gia: {friend.joinedDate}
-                </span>
+        {loading ? (
+          <div className="space-y-3 animate-pulse">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="py-2.5 space-y-2">
+                <div className="h-3.5 bg-slate-200 rounded w-1/3" />
+                <div className="h-3 bg-slate-100 rounded w-1/2" />
               </div>
+            ))}
+          </div>
+        ) : referrals.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            title="Chưa có bạn bè nào tham gia"
+            description="Chia sẻ mã giới thiệu của bạn để nhận 10.000đ cho mỗi bạn bè có đơn Shopee đầu tiên."
+          />
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {referrals.map((friend) => (
+              <div key={friend.id} className="py-3 flex items-center justify-between text-xs">
+                <div className="min-w-0">
+                  <span className="font-bold text-slate-800 block truncate">{friend.name}</span>
+                  <span className="text-[11px] text-slate-400">
+                    {friend.phone || friend.email} · Ngày tham gia: {formatDate(friend.createdAt)}
+                  </span>
+                </div>
 
-              <div className="text-right">
-                {friend.bonus > 0 ? (
-                  <span className="font-extrabold text-brand-600 block">
-                    +{formatVND(friend.bonus)}
+                <div className="text-right shrink-0">
+                  {friend.bonus > 0 ? (
+                    <span className="font-extrabold text-brand-600 block tabular-nums">
+                      +{formatVND(friend.bonus)}
+                    </span>
+                  ) : (
+                    <span className="text-slate-400 font-medium block">
+                      Chờ đơn hàng
+                    </span>
+                  )}
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    {friend.status === 'BONUS_PAID' ? 'Đã nhận thưởng' : 'Đã đăng ký'}
                   </span>
-                ) : (
-                  <span className="text-slate-400 font-medium block">
-                    Chờ đơn hàng
-                  </span>
-                )}
-                <span className="text-[10px] text-slate-400">{friend.status}</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

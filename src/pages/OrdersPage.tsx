@@ -1,14 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../stores/useAppStore';
 import { OrderStatus } from '../types';
 import { OrderCard } from '../components/orders/OrderCard';
 import { EmptyState } from '../components/common/EmptyState';
 import { ShoppingBag, Search } from 'lucide-react';
+import { isAuthenticated } from '../services/api';
+import { RegisterModal } from '../components/auth/RegisterModal';
 
 export const OrdersPage: React.FC = () => {
-  const { orders } = useAppStore();
+  const { orders, fetchUserOrders } = useAppStore();
   const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const isAuth = isAuthenticated();
+
+  useEffect(() => {
+    if (isAuth) {
+      fetchUserOrders();
+    }
+  }, [fetchUserOrders, isAuth]);
+
+  if (!isAuth) {
+    return (
+      <div className="space-y-4 pb-6">
+        <div>
+          <h1 className="text-xl font-black text-slate-900 tracking-tight">
+            Theo dõi đơn hàng & hoàn tiền
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Quản lý tiến độ hoàn tiền các đơn đã đặt qua link Shopee
+          </p>
+        </div>
+        <EmptyState
+          icon={ShoppingBag}
+          title="Bạn chưa đăng nhập"
+          description="Vui lòng đăng nhập để xem lịch sử đơn hàng và tiến độ hoàn tiền của bạn."
+          actionText="Đăng nhập ngay"
+          onAction={() => setShowAuthModal(true)}
+        />
+        <RegisterModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      </div>
+    );
+  }
 
   const tabs: { key: OrderStatus | 'all'; label: string }[] = [
     { key: 'all', label: 'Tất cả' },
@@ -34,10 +68,10 @@ export const OrdersPage: React.FC = () => {
       {/* Page Title */}
       <div>
         <h1 className="text-xl font-black text-slate-900 tracking-tight">
-          Theo dõi đơn hàng & hoàn tiền
+          Theo dõi đơn hàng & tiền hoàn
         </h1>
         <p className="text-xs text-slate-500 mt-0.5">
-          Quản lý tiến độ hoàn tiền các đơn đã đặt qua link Shopee
+          Tiến trình đối soát và giải ngân tiền hoàn từ Shopee
         </p>
       </div>
 
@@ -48,33 +82,35 @@ export const OrdersPage: React.FC = () => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Tìm mã đơn hàng hoặc tên sản phẩm..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-brand text-xs sm:text-sm placeholder:text-slate-400 outline-none focus:border-brand-600 shadow-2xs font-medium"
+          placeholder="Tìm theo mã đơn hoặc tên món đồ..."
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200/90 rounded-xl text-xs sm:text-sm placeholder:text-slate-400 outline-none focus:border-brand-600 shadow-2xs font-medium"
         />
       </div>
 
       {/* Status Filter Tabs (Horizontal scrollable) */}
-      <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4">
+      <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
         {tabs.map((tab) => {
           const count =
             tab.key === 'all'
               ? orders.length
               : orders.filter((o) => o.status === tab.key).length;
 
+          const isActive = activeTab === tab.key;
+
           return (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition tap-active flex items-center gap-1.5 ${
-                activeTab === tab.key
-                  ? 'bg-brand-600 text-white shadow-sm'
+              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition tap-active flex items-center gap-1.5 cursor-pointer ${
+                isActive
+                  ? 'bg-slate-900 text-white shadow-2xs'
                   : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
               }`}
             >
               <span>{tab.label}</span>
               <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
-                  activeTab === tab.key
+                className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+                  isActive
                     ? 'bg-white/20 text-white'
                     : 'bg-slate-100 text-slate-500'
                 }`}

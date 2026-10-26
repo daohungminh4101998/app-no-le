@@ -95,13 +95,13 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md" onClick={onClose}>
       <div 
-        className="w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden relative"
+        className="w-full max-w-sm bg-white rounded-3xl shadow-card border border-slate-100 overflow-hidden relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with gradient badge */}
-        <div className="bg-gradient-to-r from-brand-600 to-brand-700 p-5 text-white relative">
+        <div className="bg-gradient-to-r from-brand-700 via-brand-600 to-emerald-600 p-5 text-white relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition tap-active"
@@ -110,13 +110,14 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
             <X className="w-4 h-4" />
           </button>
 
-          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 font-bold text-[10px] mb-2 uppercase tracking-wider">
-            🪙 Hoàn Xu Cashback
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 font-black text-[10px] mb-2 uppercase tracking-wider shadow-2xs">
+            <span>🪙</span>
+            <span>Nô Tì Cashback</span>
           </div>
           <h2 className="text-xl font-black tracking-tight">
             {isLoginTab ? 'Đăng Nhập Tài Khoản' : 'Tạo Tài Khoản Mới'}
           </h2>
-          <p className="text-xs text-white/80 mt-0.5">
+          <p className="text-xs text-white/80 mt-0.5 font-medium">
             {isLoginTab
               ? 'Đăng nhập để theo dõi đơn và số dư ví'
               : 'Tích lũy hoàn tiền mọi đơn hàng Shopee'}
@@ -124,14 +125,14 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
         </div>
 
         {/* Tab switcher */}
-        <div className="flex border-b border-slate-100 bg-slate-50/50">
+        <div className="flex border-b border-slate-100 bg-slate-50/60 p-1 gap-1">
           <button
             type="button"
             onClick={() => { setIsLoginTab(false); setErrorMessage(null); }}
-            className={`flex-1 py-3 text-xs font-bold transition border-b-2 ${
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
               !isLoginTab
-                ? 'border-brand-600 text-brand-700 bg-white'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60'
+                : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             Đăng Ký
@@ -139,10 +140,10 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
           <button
             type="button"
             onClick={() => { setIsLoginTab(true); setErrorMessage(null); }}
-            className={`flex-1 py-3 text-xs font-bold transition border-b-2 ${
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
               isLoginTab
-                ? 'border-brand-600 text-brand-700 bg-white'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
+                ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60'
+                : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             Đăng Nhập
@@ -152,7 +153,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-5 space-y-3.5">
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{errorMessage}</span>
             </div>
@@ -160,11 +161,11 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
 
           {!isLoginTab && (
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wide mb-1">
                 Họ và Tên
               </label>
               <div className="relative">
-                <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
                   type="text"
                   name="name"
@@ -172,18 +173,18 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
                   placeholder="Ví dụ: Nguyễn Văn A"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 outline-none transition font-medium"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wide mb-1">
               Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
                 type="email"
                 name="email"
@@ -191,36 +192,36 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
                 placeholder="email@example.com"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
+                className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 outline-none transition font-medium"
               />
             </div>
           </div>
 
           {!isLoginTab && (
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wide mb-1">
                 Số Điện Thoại (Tùy chọn)
               </label>
               <div className="relative">
-                <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
                   type="tel"
                   name="phone"
                   placeholder="0901234567"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 outline-none transition font-medium"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+            <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wide mb-1">
               Mật Khẩu
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
                 type="password"
                 name="password"
@@ -229,25 +230,25 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
                 placeholder="Tối thiểu 6 ký tự"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
+                className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 outline-none transition font-medium"
               />
             </div>
           </div>
 
           {!isLoginTab && (
             <div>
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wide mb-1">
                 Mã Giới Thiệu (Nếu có)
               </label>
               <div className="relative">
-                <Gift className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Gift className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                 <input
                   type="text"
                   name="referralCode"
                   placeholder="Nhập mã bạn bè chia sẻ"
                   value={formData.referralCode}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition uppercase"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 outline-none transition uppercase font-mono"
                 />
               </div>
             </div>
@@ -256,7 +257,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-2.5 px-4 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-extrabold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 tap-active disabled:opacity-70 cursor-pointer"
+            className="w-full mt-2 py-3 px-4 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-cta transition-all flex items-center justify-center gap-2 tap-active disabled:opacity-70 cursor-pointer"
           >
             {loading ? (
               <>
@@ -273,9 +274,9 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, o
         </form>
 
         {/* Footer info */}
-        <div className="p-3 bg-slate-50 text-center border-t border-slate-100 text-[11px] text-slate-500">
+        <div className="p-3 bg-slate-50/80 text-center border-t border-slate-100 text-[11px] text-slate-500">
           Bằng việc tiếp tục, bạn đồng ý với{' '}
-          <span className="font-semibold text-brand-700">Điều khoản dịch vụ</span> của Hoàn Xu.
+          <span className="font-bold text-brand-700">Điều khoản dịch vụ</span> của Nô Tì.
         </div>
       </div>
     </div>,

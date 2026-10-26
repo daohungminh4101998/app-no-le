@@ -101,6 +101,16 @@ export interface UserProfile {
   totalReferralBonus: number;
 }
 
+export interface Referral {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  createdAt: string;
+  bonus: number;
+  status: 'REGISTERED' | 'BONUS_PAID';
+}
+
 export interface WalletBalance {
   available: number;   // Có thể rút
   pending: number;     // Đang chờ xác nhận
@@ -114,4 +124,17 @@ export interface BankAccountInfo {
   bankName: string;
   accountNumber: string;
   accountName: string;
+}
+
+export interface Bank {
+  id: number;
+  name: string;
+  code: string;
+  bin: string;
+  shortName: string;
+  logo: string;
+  transferSupported: number;
+  lookupSupported: number;
+  isTransfer: number;
+  swift_code: string | null;
 }

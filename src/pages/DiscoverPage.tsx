@@ -55,20 +55,28 @@ export const DiscoverPage: React.FC = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Tìm sản phẩm, thương hiệu Mall..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-brand text-xs sm:text-sm placeholder:text-slate-400 outline-none focus:border-brand-600 shadow-2xs font-medium"
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200/90 rounded-xl text-xs sm:text-sm placeholder:text-slate-400 outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/15 shadow-2xs font-medium transition"
         />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold px-1"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Category Horizontal Pills */}
-      <div className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
         {categories.map((c) => (
           <button
             key={c.id}
             onClick={() => setActiveCategory(c.id)}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition tap-active ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all tap-active ${
               activeCategory === c.id
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-white text-slate-600 border border-slate-200/90 hover:border-slate-300 shadow-2xs'
             }`}
           >
             {c.label}
@@ -80,60 +88,68 @@ export const DiscoverPage: React.FC = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <button
           onClick={() => setActiveSection('deals')}
-          className={`p-2.5 rounded-brand border text-left flex items-center gap-2 transition tap-active ${
+          className={`p-3 rounded-2xl border text-left flex items-center gap-2.5 transition tap-active shadow-2xs ${
             activeSection === 'deals'
-              ? 'bg-orange-50/80 border-orange-300 text-orange-950 font-bold'
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+              ? 'bg-orange-50/70 border-orange-200/90 text-orange-950 font-bold ring-1 ring-orange-400/30'
+              : 'bg-white border-slate-200/80 text-slate-700 hover:border-slate-300'
           }`}
         >
-          <Flame className="w-4 h-4 text-orange-500 shrink-0" />
+          <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+            <Flame className="w-4 h-4" />
+          </div>
           <div className="min-w-0">
-            <span className="text-xs block leading-tight">Deal hoàn cao</span>
+            <span className="text-xs block font-bold leading-tight truncate">Deal hoàn cao</span>
             <span className="text-[10px] text-slate-400 block font-normal">Đến 8%</span>
           </div>
         </button>
 
         <button
           onClick={() => setActiveSection('popular')}
-          className={`p-2.5 rounded-brand border text-left flex items-center gap-2 transition tap-active ${
+          className={`p-3 rounded-2xl border text-left flex items-center gap-2.5 transition tap-active shadow-2xs ${
             activeSection === 'popular'
-              ? 'bg-blue-50/80 border-blue-300 text-blue-950 font-bold'
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+              ? 'bg-blue-50/70 border-blue-200/90 text-blue-950 font-bold ring-1 ring-blue-400/30'
+              : 'bg-white border-slate-200/80 text-slate-700 hover:border-slate-300'
           }`}
         >
-          <TrendingUp className="w-4 h-4 text-blue-500 shrink-0" />
+          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+            <TrendingUp className="w-4 h-4" />
+          </div>
           <div className="min-w-0">
-            <span className="text-xs block leading-tight">Mua nhiều</span>
+            <span className="text-xs block font-bold leading-tight truncate">Mua nhiều</span>
             <span className="text-[10px] text-slate-400 block font-normal">Top bán chạy</span>
           </div>
         </button>
 
         <button
           onClick={() => setActiveSection('vouchers')}
-          className={`p-2.5 rounded-brand border text-left flex items-center gap-2 transition tap-active ${
+          className={`p-3 rounded-2xl border text-left flex items-center gap-2.5 transition tap-active shadow-2xs ${
             activeSection === 'vouchers'
-              ? 'bg-amber-50/80 border-amber-300 text-amber-950 font-bold'
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+              ? 'bg-amber-50/70 border-amber-200/90 text-amber-950 font-bold ring-1 ring-amber-400/30'
+              : 'bg-white border-slate-200/80 text-slate-700 hover:border-slate-300'
           }`}
         >
-          <Ticket className="w-4 h-4 text-amber-500 shrink-0" />
+          <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+            <Ticket className="w-4 h-4" />
+          </div>
           <div className="min-w-0">
-            <span className="text-xs block leading-tight">Voucher Shopee</span>
+            <span className="text-xs block font-bold leading-tight truncate">Voucher Shopee</span>
             <span className="text-[10px] text-slate-400 block font-normal">16 mã hot</span>
           </div>
         </button>
 
         <button
           onClick={() => setActiveSection('top_cashback')}
-          className={`p-2.5 rounded-brand border text-left flex items-center gap-2 transition tap-active ${
+          className={`p-3 rounded-2xl border text-left flex items-center gap-2.5 transition tap-active shadow-2xs ${
             activeSection === 'top_cashback'
-              ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950 font-bold'
-              : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+              ? 'bg-emerald-50/70 border-emerald-200/90 text-emerald-950 font-bold ring-1 ring-brand-400/30'
+              : 'bg-white border-slate-200/80 text-slate-700 hover:border-slate-300'
           }`}
         >
-          <Coins className="w-4 h-4 text-brand-600 shrink-0" />
+          <div className="w-8 h-8 rounded-xl bg-emerald-100 text-brand-600 flex items-center justify-center shrink-0">
+            <Coins className="w-4 h-4" />
+          </div>
           <div className="min-w-0">
-            <span className="text-xs block leading-tight">Hoàn cao nhất</span>
+            <span className="text-xs block font-bold leading-tight truncate">Hoàn cao nhất</span>
             <span className="text-[10px] text-slate-400 block font-normal">Đến 249K/đơn</span>
           </div>
         </button>
@@ -143,16 +159,20 @@ export const DiscoverPage: React.FC = () => {
       {(activeSection === 'all' || activeSection === 'vouchers') && (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5 uppercase tracking-wide">
-              <Ticket className="w-4 h-4 text-amber-500" />
-              🎟️ Voucher Shopee áp dụng kèm hoàn tiền
-            </h3>
+            <div className="flex items-center gap-2">
+              <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                <Ticket className="w-3.5 h-3.5" />
+              </span>
+              <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wide">
+                Voucher Shopee áp dụng kèm hoàn tiền
+              </h3>
+            </div>
             {activeSection !== 'vouchers' && (
               <button
                 onClick={() => setActiveSection('vouchers')}
-                className="text-xs text-brand-600 font-bold"
+                className="text-xs text-brand-600 font-bold hover:text-brand-700 transition"
               >
-                Xem thêm
+                Xem tất cả
               </button>
             )}
           </div>
@@ -169,13 +189,41 @@ export const DiscoverPage: React.FC = () => {
       {activeSection !== 'vouchers' && (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5 uppercase tracking-wide">
-              {activeSection === 'deals' && '🔥 Deal hoàn tiền cao nhất'}
-              {activeSection === 'popular' && '📈 Đang được mua nhiều nhất'}
-              {activeSection === 'top_cashback' && '💰 Hoàn tiền cao nhất (VNĐ)'}
-              {activeSection === 'all' && '✨ Gợi ý sản phẩm nổi bật'}
+            <h3 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2 uppercase tracking-wide">
+              {activeSection === 'deals' && (
+                <>
+                  <span className="w-6 h-6 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+                    <Flame className="w-3.5 h-3.5" />
+                  </span>
+                  <span>Deal hoàn tiền cao nhất</span>
+                </>
+              )}
+              {activeSection === 'popular' && (
+                <>
+                  <span className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                  </span>
+                  <span>Đang được mua nhiều nhất</span>
+                </>
+              )}
+              {activeSection === 'top_cashback' && (
+                <>
+                  <span className="w-6 h-6 rounded-lg bg-emerald-100 text-brand-600 flex items-center justify-center">
+                    <Coins className="w-3.5 h-3.5" />
+                  </span>
+                  <span>Hoàn tiền cao nhất (VNĐ)</span>
+                </>
+              )}
+              {activeSection === 'all' && (
+                <>
+                  <span className="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+                    ✨
+                  </span>
+                  <span>Gợi ý sản phẩm nổi bật</span>
+                </>
+              )}
             </h3>
-            <span className="text-xs text-slate-400 font-medium">
+            <span className="text-xs text-slate-400 font-medium tabular-nums">
               {filteredProducts.length} sản phẩm
             </span>
           </div>

@@ -17,32 +17,34 @@ export const Toast: React.FC = () => {
   if (!toast.show) return null;
 
   const icons = {
-    success: <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />,
-    error: <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />,
-    info: <Info className="w-5 h-5 text-blue-500 shrink-0" />,
+    success: <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />,
+    error: <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />,
+    info: <Info className="w-4 h-4 text-blue-600 shrink-0" />,
   };
 
-  const borderColors = {
-    success: 'border-emerald-200 bg-emerald-50/95 text-emerald-950',
-    error: 'border-rose-200 bg-rose-50/95 text-rose-950',
-    info: 'border-blue-200 bg-blue-50/95 text-blue-950',
+  const styleConfigs = {
+    success: 'border-emerald-200/90 bg-white/95 text-slate-800 shadow-card-hover',
+    error: 'border-rose-200/90 bg-white/95 text-slate-800 shadow-card-hover',
+    info: 'border-blue-200/90 bg-white/95 text-slate-800 shadow-card-hover',
   };
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-sm transition-all duration-300 transform translate-y-0">
+    <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-sm transition-all duration-200 animate-in fade-in slide-in-from-top-2">
       <div
-        className={`flex items-center justify-between p-3.5 rounded-brand border shadow-lg backdrop-blur-md ${borderColors[toast.type]}`}
+        className={`flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border backdrop-blur-xl ${styleConfigs[toast.type]}`}
       >
-        <div className="flex items-center gap-2.5">
-          {icons[toast.type]}
-          <p className="text-sm font-semibold">{toast.message}</p>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="p-1 rounded-lg bg-slate-50 shrink-0">
+            {icons[toast.type]}
+          </div>
+          <p className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">{toast.message}</p>
         </div>
         <button
           onClick={hideToast}
-          className="p-1 rounded-full hover:bg-black/5 text-slate-500 transition"
-          aria-label="Close"
+          className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition tap-active shrink-0 cursor-pointer"
+          aria-label="Đóng"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

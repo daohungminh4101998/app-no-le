@@ -294,3 +294,325 @@ export const affiliateApi = {
     return request<any>(`/affiliate/history?page=${page}&limit=${limit}`);
   },
 };
+
+// ─── Admin API Types ────────────────────────────────────────────────────────
+
+export interface AdminStatistics {
+  totalUsers: number;
+  totalClicks: number;
+  totalConversions: number;
+  totalCommission: number;
+  confirmedCommission: number;
+  pendingCommission: number;
+  totalCashback: number;
+  pendingCashback: number;
+  totalWithdrawn: number;
+  adminBalance: number;
+  pendingWithdrawals: number;
+  pendingWithdrawalsAmount: number;
+  netProfit: number;
+}
+
+export interface AdminUserWallet {
+  availableBalance: number;
+  pendingBalance: number;
+  totalEarned: number;
+  totalWithdrawn: number;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string | null;
+  role: 'USER' | 'ADMIN';
+  status: 'ACTIVE' | 'BLOCKED' | 'PENDING';
+  referralCode: string;
+  createdAt: string;
+  wallet: AdminUserWallet | null;
+}
+
+export interface AdminUserDetail extends AdminUser {
+  counts: {
+    affiliateClicks: number;
+    conversions: number;
+    withdrawals: number;
+  };
+}
+
+export interface AdminWithdrawal {
+  id: string;
+  userId: string;
+  walletId: string;
+  amount: number;
+  bankName: string;
+  bankAccountNumber: string;
+  bankAccountName: string;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'REJECTED' | 'CANCELLED';
+  note?: string | null;
+  processedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: { id: string; name: string; email: string };
+}
+
+export interface AdminConversion {
+  id: string;
+  checkoutId: string;
+  utmContent: string;
+  userId: string | null;
+  platform: 'SHOPEE';
+  externalOrderId: string;
+  externalItemId: string;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  orderAmount: number;
+  itemCount: number;
+  itemName: string;
+  itemImage: string;
+  commissionAmount: number;
+  commissionRate: number;
+  cashbackAmount: number;
+  reconcileStatus: 'PENDING' | 'MATCHED' | 'SKIPPED' | 'ERROR';
+  reconcileNote?: string | null;
+  purchaseTime: string;
+  createdAt: string;
+  updatedAt: string;
+  user: { id: string; name: string; email: string };
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// ─── Admin API Service ───────────────────────────────────────────────────────
+
+export const adminApi = {
+  getStatistics: (): Promise<AdminStatistics> => {
+    return request<AdminStatistics>('/admin/statistics');
+  },
+
+  getWithdrawals: (
+    page = 1,
+    limit = 20,
+    status?: AdminWithdrawal['status']
+  ): Promise<PaginatedResponse<AdminWithdrawal>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.set('status', status);
+    return request<PaginatedResponse<AdminWithdrawal>>(`/admin/withdrawals?${params}`);
+  },
+
+  approveWithdrawal: (id: string): Promise<AdminWithdrawal> => {
+    return request<AdminWithdrawal>(`/admin/withdrawals/${id}/approve`, { method: 'POST' });
+  },
+
+  rejectWithdrawal: (id: string, reason: string): Promise<AdminWithdrawal> => {
+    return request<AdminWithdrawal>(`/admin/withdrawals/${id}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  },
+
+  getUsers: (
+    page = 1,
+    limit = 20,
+    search?: string
+  ): Promise<PaginatedResponse<AdminUser>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (search) params.set('search', search);
+    return request<PaginatedResponse<AdminUser>>(`/admin/users?${params}`);
+  },
+
+  getUserDetail: (id: string): Promise<AdminUserDetail> => {
+    return request<AdminUserDetail>(`/admin/users/${id}`);
+  },
+
+  adjustWallet: (
+    userId: string,
+    amount: number,
+    description: string
+  ): Promise<unknown> => {
+    return request<unknown>(`/admin/wallets/${userId}/adjust`, {
+      method: 'POST',
+      body: JSON.stringify({ amount, description }),
+    });
+  },
+
+  getConversions: (
+    page = 1,
+    limit = 20,
+    status?: AdminConversion['status']
+  ): Promise<PaginatedResponse<AdminConversion>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.set('status', status);
+    return request<PaginatedResponse<AdminConversion>>(`/admin/conversions?${params}`);
+  },
+};
+
+// ─── User & Wallet & Withdrawal API Services ─────────────────────────────────
+
+export interface WalletDto {
+  id: string;
+  userId: string;
+  availableBalance: number;
+  pendingBalance: number;
+  totalEarned: number;
+  totalWithdrawn: number;
+  updatedAt: string;
+}
+
+export interface UserTransactionDto {
+  id: string;
+  walletId: string;
+  userId: string;
+  type: string;
+  amount: number;
+  balanceBefore: number;
+  balanceAfter: number;
+  referenceType?: string | null;
+  referenceId?: string | null;
+  description?: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export interface UserConversionDto {
+  id: string;
+  checkoutId: string;
+  platform: 'SHOPEE';
+  externalOrderId: string;
+  externalItemId: string;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  orderAmount: number;
+  commissionAmount: number;
+  commissionRate: number;
+  cashbackAmount: number;
+  itemName: string;
+  itemImage: string;
+  purchaseTime: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserWithdrawalDto {
+  id: string;
+  userId: string;
+  walletId: string;
+  amount: number;
+  bankName: string;
+  bankAccountNumber: string;
+  bankAccountName: string;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'REJECTED' | 'CANCELLED';
+  note?: string | null;
+  processedAt?: string | null;
+  createdAt: string;
+}
+
+export interface CreateWithdrawalPayload {
+  amount: number;
+  bankName: string;
+  bankAccountNumber: string;
+  bankAccountName: string;
+}
+
+export interface UserProfileDto {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string | null;
+  avatar?: string | null;
+  role: 'USER' | 'ADMIN';
+  status: string;
+  referralCode: string;
+  referredBy?: string | null;
+  createdAt: string;
+  totalReferredCount: number;
+  totalReferralBonus: number;
+}
+
+export interface UserReferralDto {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  createdAt: string;
+  bonus: number;
+  status: 'REGISTERED' | 'BONUS_PAID';
+}
+
+export const userApi = {
+  getProfile: (): Promise<UserProfileDto> => {
+    return request<UserProfileDto>('/users/me');
+  },
+
+  getReferrals: (page = 1, limit = 20): Promise<PaginatedResponse<UserReferralDto>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    return request<PaginatedResponse<UserReferralDto>>(`/users/me/referrals?${params}`);
+  },
+
+  getWallet: (): Promise<WalletDto> => {
+    return request<WalletDto>('/users/me/wallet');
+  },
+
+  getTransactions: (
+    page = 1,
+    limit = 20,
+    type?: string
+  ): Promise<PaginatedResponse<UserTransactionDto>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (type) params.set('type', type);
+    return request<PaginatedResponse<UserTransactionDto>>(`/users/me/transactions?${params}`);
+  },
+
+  getCashbacks: (
+    page = 1,
+    limit = 20,
+    status?: string
+  ): Promise<PaginatedResponse<UserConversionDto>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.set('status', status);
+    return request<PaginatedResponse<UserConversionDto>>(`/users/me/cashbacks?${params}`);
+  },
+
+  getOrders: (
+    page = 1,
+    limit = 20,
+    status?: string
+  ): Promise<PaginatedResponse<UserConversionDto>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.set('status', status);
+    return request<PaginatedResponse<UserConversionDto>>(`/users/me/orders?${params}`);
+  },
+
+  getWithdrawals: (
+    page = 1,
+    limit = 20
+  ): Promise<PaginatedResponse<UserWithdrawalDto>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    return request<PaginatedResponse<UserWithdrawalDto>>(`/users/me/withdrawals?${params}`);
+  },
+};
+
+export const withdrawalApi = {
+  create: (payload: CreateWithdrawalPayload): Promise<UserWithdrawalDto> => {
+    return request<UserWithdrawalDto>('/withdrawals', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  list: (page = 1, limit = 20): Promise<PaginatedResponse<UserWithdrawalDto>> => {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    return request<PaginatedResponse<UserWithdrawalDto>>(`/withdrawals?${params}`);
+  },
+
+  getById: (id: string): Promise<UserWithdrawalDto> => {
+    return request<UserWithdrawalDto>(`/withdrawals/${id}`);
+  },
+};
+

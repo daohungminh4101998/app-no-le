@@ -34,7 +34,7 @@ export const CashbackAmount: React.FC<CashbackAmountProps> = ({
   const displayVal = formatVND(Math.abs(amount));
 
   return (
-    <span className={`inline-flex items-baseline ${sizeClasses} ${colorClass} ${className}`}>
+    <span className={`inline-flex items-baseline tabular-nums ${sizeClasses} ${colorClass} ${className}`}>
       <span>{prefix}</span>
       <span>{displayVal}</span>
     </span>

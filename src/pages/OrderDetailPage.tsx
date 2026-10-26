@@ -69,17 +69,17 @@ export const OrderDetailPage: React.FC = () => {
       {/* Back button */}
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 tap-active"
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 tap-active cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span>Quay lại</span>
+        <span>Quay lại đơn hàng</span>
       </button>
 
       {/* Header status card */}
-      <div className="bg-white rounded-brand-xl p-4 sm:p-5 border border-slate-200 shadow-soft">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-card">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
           <div>
-            <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider block">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
               Mã đơn hàng Hoàn Xu
             </span>
             <span className="text-base font-black font-mono text-slate-900">
@@ -89,14 +89,14 @@ export const OrderDetailPage: React.FC = () => {
           <StatusBadge status={order.status} />
         </div>
 
-        <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-200/80">
+        <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/80">
           {order.note || statusConfig.description}
         </p>
 
         {order.shopeeOrderRef && (
-          <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+          <div className="mt-3 flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
             <span>Mã đối soát Shopee:</span>
-            <span className="font-mono font-bold text-slate-700">
+            <span className="font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
               {order.shopeeOrderRef}
             </span>
           </div>
@@ -105,27 +105,27 @@ export const OrderDetailPage: React.FC = () => {
 
       {/* Item info */}
       {firstItem && (
-        <div className="bg-white rounded-brand-xl p-4 sm:p-5 border border-slate-200 shadow-soft">
-          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
-            Thông tin sản phẩm
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-card">
+          <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-3">
+            Sản phẩm trong đơn
           </h3>
 
-          <div className="flex gap-3 items-start">
+          <div className="flex gap-3.5 items-start">
             <img
               src={firstItem.productImage}
               alt={firstItem.productName}
-              className="w-20 h-20 rounded-lg object-cover border border-slate-100 shrink-0 bg-slate-50"
+              className="w-18 h-18 rounded-xl object-cover border border-slate-100 shrink-0 bg-slate-50"
             />
             <div className="flex-1 min-w-0">
-              <span className="text-[11px] text-slate-400 flex items-center gap-1 mb-1 truncate">
+              <span className="text-[11px] text-slate-400 flex items-center gap-1 mb-1 truncate font-medium">
                 <Store className="w-3 h-3" /> {firstItem.shopName}
               </span>
-              <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 mb-2">
+              <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug line-clamp-2 mb-2">
                 {firstItem.productName}
               </h4>
               <div className="flex items-baseline justify-between">
                 <span className="text-xs text-slate-500">Giá thanh toán:</span>
-                <span className="text-sm font-extrabold text-slate-900">
+                <span className="text-sm font-extrabold text-slate-900 tabular-nums">
                   {formatVND(firstItem.price)}
                 </span>
               </div>
@@ -133,10 +133,10 @@ export const OrderDetailPage: React.FC = () => {
           </div>
 
           {/* Cashback breakdown */}
-          <div className="mt-4 pt-3.5 border-t border-slate-100 bg-emerald-50/60 rounded-brand p-3 border border-emerald-100">
+          <div className="mt-4 pt-3 border-t border-slate-100 bg-emerald-50/60 rounded-xl p-3 border border-emerald-100">
             <div className="flex items-center justify-between text-xs mb-1">
               <span className="text-emerald-900 font-semibold">Tỷ lệ hoàn tiền:</span>
-              <span className="font-extrabold text-emerald-800">
+              <span className="font-extrabold text-emerald-800 tabular-nums">
                 {formatPercent(firstItem.cashbackRate)}
               </span>
             </div>
@@ -144,7 +144,7 @@ export const OrderDetailPage: React.FC = () => {
               <span className="text-xs font-bold text-slate-700">
                 {order.status === 'cashback_paid' ? 'Tiền đã hoàn vào ví:' : 'Tiền hoàn dự kiến:'}
               </span>
-              <span className="text-lg font-black text-brand-700">
+              <span className="text-lg font-black text-brand-700 tabular-nums">
                 +{formatVND(order.actualCashback || order.estimatedCashback)}
               </span>
             </div>
@@ -153,8 +153,8 @@ export const OrderDetailPage: React.FC = () => {
       )}
 
       {/* Progress Timeline */}
-      <div className="bg-white rounded-brand-xl p-4 sm:p-5 border border-slate-200 shadow-soft">
-        <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-card">
+        <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-4">
           Tiến trình xác nhận đơn hàng
         </h3>
 
@@ -172,7 +172,7 @@ export const OrderDetailPage: React.FC = () => {
                 {step.done ? (
                   <CheckCircle2 className="w-3.5 h-3.5" />
                 ) : (
-                  <span className="w-2 h-2 rounded-full bg-slate-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                 )}
               </div>
 
@@ -194,7 +194,7 @@ export const OrderDetailPage: React.FC = () => {
       </div>
 
       {/* FAQ notice */}
-      <div className="p-3.5 bg-slate-50 rounded-brand border border-slate-200 text-xs text-slate-500 flex items-start gap-2">
+      <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/90 text-xs text-slate-500 flex items-start gap-2">
         <HelpCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
         <span>
           Cần hỗ trợ về đối soát đơn hàng? Bạn có thể gửi yêu cầu hỗ trợ kèm mã #{order.orderCode} tại trang Cá nhân.

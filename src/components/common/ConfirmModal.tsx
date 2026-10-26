@@ -62,24 +62,24 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       aria-modal="true"
     >
       <div
-        className="w-full max-w-xs bg-white rounded-brand-xl p-5 shadow-float border border-slate-200 text-center relative animate-in zoom-in-95 duration-200"
+        className="w-full max-w-xs bg-white rounded-2xl p-5 shadow-float border border-slate-200/90 text-center relative animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="Đóng"
-          className="absolute top-3 right-3 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition tap-active"
+          className="absolute top-3 right-3 p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition tap-active cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
 
         <div
-          className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 ${iconStyle}`}
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-2xs ${iconStyle}`}
         >
-          <Icon className="w-7 h-7" />
+          <Icon className="w-6 h-6 stroke-[2]" />
         </div>
 
-        <h3 className="text-base font-black text-slate-900">{title}</h3>
+        <h3 className="text-base font-extrabold text-slate-900">{title}</h3>
         {description && (
           <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
             {description}
@@ -89,13 +89,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className="grid grid-cols-2 gap-2 mt-5">
           <button
             onClick={onClose}
-            className="h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-brand transition tap-active"
+            className="h-10 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition tap-active cursor-pointer"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
-            className={`h-10 text-white font-bold text-sm rounded-brand transition tap-active ${confirmBtnStyle}`}
+            className={`h-10 text-white font-bold text-xs rounded-xl transition tap-active cursor-pointer ${confirmBtnStyle}`}
           >
             {confirmText}
           </button>
