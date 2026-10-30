@@ -91,7 +91,7 @@ export const LinkPreviewCard: React.FC<LinkPreviewCardProps> = ({
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-22 h-22 sm:w-26 sm:h-26 object-cover rounded-xl border border-slate-100 shadow-2xs"
+              className="w-12 h-12 sm:w-12 sm:h-12 object-cover rounded-xl border border-slate-100 shadow-2xs"
             />
             {product.isMall && (
               <span className="absolute bottom-1 left-1 bg-shopee-primary text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow">
