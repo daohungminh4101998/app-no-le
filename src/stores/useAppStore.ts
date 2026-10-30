@@ -477,8 +477,10 @@ export const useAppStore = create<AppState>()(
     {
       name: 'hoan_xu_cashback_state_v2',
       storage: createJSONStorage(() => localStorage),
-      // Chỉ persist những state không nhạy cảm / không cần fresh từ server mỗi lần
+      // Persist user + UI state để duy trì đăng nhập sau khi reload trang.
+      // syncUserData() trong App.tsx sẽ refresh dữ liệu mới nhất từ server ở background.
       partialize: (state) => ({
+        user: state.user,
         savedProductIds: state.savedProductIds,
         claimedVoucherIds: state.claimedVoucherIds,
         currentPreviewProduct: state.currentPreviewProduct,
